@@ -56,6 +56,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
             if (_event === 'SIGNED_IN' && session?.user) {
+                // Ensure a profile row exists for this user
+                const { error: upsertError } = await supabase
+                    .from('profiles')
+                    .upsert({ id: session.user.id, parent_email: session.user.email }, { onConflict: 'id' });
+
+                if (upsertError) {
+                    console.error('Failed to ensure profile exists:', upsertError);
+                }
+
                 migrateLocalData(session.user.id);
             }
         });
