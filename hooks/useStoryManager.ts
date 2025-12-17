@@ -176,7 +176,15 @@ export const useStoryManager = ({
             triggerConfetti();
         } catch (error: any) {
             console.error(error);
-            if (error.message?.includes("connexion") || !navigator.onLine) {
+            const errorMessage = error?.message || JSON.stringify(error);
+
+            if (errorMessage.includes("429") || errorMessage.includes("quota")) {
+                alert("Oups ! Les lutins sont fatigués (Quota dépassé). Réessaie dans une minute ! ⏳");
+                setAppState(AppState.WIZARD);
+                return;
+            }
+
+            if (errorMessage.includes("connexion") || !navigator.onLine) {
                 setErrorState('OFFLINE');
             } else {
                 setErrorState('GENERIC');
