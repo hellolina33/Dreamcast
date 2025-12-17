@@ -95,10 +95,11 @@ export const AppRouter: React.FC<AppRouterProps> = ({
                     {user && appState === AppState.WIZARD && (
                         <PageTransition key="wizard">
                             <Wizard
-                                params={storyParams}
-                                onUpdate={updateParams}
-                                onBack={() => setAppState(AppState.HOME)}
-                                onCreate={handleCreate}
+                                data={storyParams}
+                                updateData={updateParams}
+                                onCancel={() => setAppState(AppState.HOME)}
+                                onSubmit={handleCreate}
+                                profile={childProfile}
                             />
                         </PageTransition>
                     )}
