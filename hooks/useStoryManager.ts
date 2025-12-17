@@ -28,7 +28,13 @@ export const useStoryManager = ({
     const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
     const [loadingStep, setLoadingStep] = useState(1);
     const [isNewStory, setIsNewStory] = useState(false);
-    const [storyParams, setStoryParams] = useState<StoryParams>(INITIAL_STORY_PARAMS);
+    // Safety fallback if import fails
+    const defaultParams = INITIAL_STORY_PARAMS || {
+        childName: '', avatar: '🧑‍🚀', age: 5, theme: '', moral: '',
+        useRealFacts: false, location: '', imageStyle: 'cartoon',
+        duration: 10, languageLevel: '5-7', narrativeStyle: 'cooperative', voiceId: 'Leda'
+    };
+    const [storyParams, setStoryParams] = useState<StoryParams>(defaultParams);
 
     // Initial Load from Supabase
     useEffect(() => {
