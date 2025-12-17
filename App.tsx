@@ -38,9 +38,10 @@ import { useSubscription } from './hooks/useSubscription';
 import { AppRouter } from './components/AppRouter';
 
 import { useStoryManager } from './hooks/useStoryManager';
+import { PasswordReset } from './components/PasswordReset';
 
 export default function App() {
-  const { user, loading: authLoading } = useAuth(); // NEW: Moved to top
+  const { user, loading: authLoading, isRecoveryMode, clearRecoveryMode } = useAuth();
   const { light, medium, impact } = useHaptic();
   const [appState, setAppState] = useState<AppState>(AppState.HOME);
   const [childProfile, setChildProfile] = useState<ChildProfile>(INITIAL_PROFILE);
@@ -163,6 +164,11 @@ export default function App() {
         </div>
       </div>
     );
+  }
+
+  // NEW: Password Recovery Guard
+  if (isRecoveryMode) {
+    return <PasswordReset onComplete={() => { clearRecoveryMode(); setAppState(AppState.HOME); }} />;
   }
 
   // NEW: Login Guard

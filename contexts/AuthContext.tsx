@@ -8,6 +8,8 @@ interface AuthContextType {
     user: User | null;
     session: Session | null;
     loading: boolean;
+    isRecoveryMode: boolean;
+    clearRecoveryMode: () => void;
     signOut: () => Promise<void>;
 }
 
@@ -15,6 +17,8 @@ const AuthContext = createContext<AuthContextType>({
     user: null,
     session: null,
     loading: true,
+    isRecoveryMode: false,
+    clearRecoveryMode: () => { },
     signOut: async () => { },
 });
 
@@ -24,6 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isRecoveryMode, setIsRecoveryMode] = useState(false);
 
     useEffect(() => {
         if (!isSupabaseConfigured()) {
@@ -45,17 +50,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUser(session?.user ?? null);
             setLoading(false);
 
+            // Detect Password Recovery flow
+            if (_event === 'PASSWORD_RECOVERY') {
+                setIsRecoveryMode(true);
+            }
+
             if (_event === 'SIGNED_IN' && session?.user) {
-                // Trigger migration only on explicit sign-in to avoid spamming on every refresh?
-                // Actually 'INITIAL_SESSION' is also fine if strict checks are in place.
-                // But migration likely only needed once in life.
-                // Let's rely on the service's internal checks for safety.
                 migrateLocalData(session.user.id);
             }
         });
 
         return () => subscription.unsubscribe();
     }, []);
+
+    const clearRecoveryMode = () => setIsRecoveryMode(false);
 
     const signOut = async () => {
         if (isSupabaseConfigured()) {
@@ -64,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, loading, signOut }}>
+        <AuthContext.Provider value={{ user, session, loading, isRecoveryMode, clearRecoveryMode, signOut }}>
             {children}
         </AuthContext.Provider>
     );
