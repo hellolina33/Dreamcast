@@ -1,0 +1,7 @@
+{
+  "name": "DreamCast - Kids Podcast Creator",
+  "description": "A magical mobile-first app that generates personalized, ultra-realistic bedtime audio stories for children using Gemini AI.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>DreamCast</title>
+    <!-- Google Fonts: Nunito (Rounded) & Baloo 2 (Playful headers) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['"Baloo 2"', 'cursive'],
+          },
+          extend: {
+            colors: {
+              night: {
+                950: '#020617', 
+                900: '#0f172a',
+                800: '#1e293b',
+              },
+              dream: {
+                500: '#8b5cf6',
+                400: '#a78bfa',
+              },
+              neon: {
+                purple: '#b026ff',
+                cyan: '#00f0ff',
+                lime: '#ccff00',
+                pink: '#ff0099'
+              }
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'blob': 'blob 10s infinite',
+              'bounce-sm': 'bounce-sm 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              'bounce-sm': {
+                 '0%': { transform: 'scale(1)' },
+                 '50%': { transform: 'scale(0.95)' },
+                 '100%': { transform: 'scale(1)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #020617;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      h1, h2, h3 {
+        font-family: 'Baloo 2', cursive;
+      }
+
+      /* Hide scrollbar */
+      .custom-scrollbar::-webkit-scrollbar { display: none; }
+      .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      /* Aurora Background Layer */
+      .aurora-layer {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: -1;
+        overflow: hidden;
+        background: #020617;
+      }
+      .blob {
+        position: absolute;
+        filter: blur(80px);
+        opacity: 0.4;
+        border-radius: 50%;
+        animation: blob 10s infinite alternate;
+      }
+      .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #4c1d95; animation-delay: 0s; }
+      .blob-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; background: #be185d; animation-delay: 2s; }
+      .blob-3 { top: 40%; left: 40%; width: 300px; height: 300px; background: #1e3a8a; animation-delay: 4s; }
+
+      /* Claymorphism Card (Soft 3D effect) */
+      .clay-card {
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2rem;
+        box-shadow: 
+          0 20px 40px rgba(0,0,0,0.2),
+          inset 0 1px 0 rgba(255,255,255,0.2);
+      }
+
+      /* Jelly Button Base */
+      .jelly-btn {
+        transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .jelly-btn:active {
+        transform: scale(0.95);
+      }
+      
+      /* Input Zoom Fix */
+      input, textarea { font-size: 16px !important; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.32.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.559.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div class="aurora-layer">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

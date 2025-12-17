@@ -1,0 +1,23 @@
+{
+    "name": "DreamCast: Histoires Magiques",
+    "short_name": "DreamCast",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#020617",
+    "theme_color": "#020617",
+    "description": "Créez des histoires audio magiques pour vos enfants grâce à l'IA.",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg",
+            "sizes": "192x192 512x512",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable any"
+        }
+    ]
+}
