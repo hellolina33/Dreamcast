@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Story } from '../types';
 import { Play, Pause, SkipBack, SkipForward, ArrowLeft, Sliders, Wind, Moon, Share2, BookOpen, Repeat, PlusCircle, X, CloudRain, Flame, Waves, Leaf, VolumeX, Mic2, MicOff, Lock } from 'lucide-react';
+import { AudioVisualizer } from './AudioVisualizer';
 
 interface PlayerProps {
   story: Story;
@@ -39,6 +40,7 @@ export const Player: React.FC<PlayerProps> = ({ story, onBack, onSequel, isNewSt
   const voiceGainRef = useRef<GainNode | null>(null);
   const ambienceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const ambienceGainRef = useRef<GainNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const wakeLockRef = useRef<any>(null);
 
   const startTimeRef = useRef<number>(0);
@@ -237,12 +239,18 @@ export const Player: React.FC<PlayerProps> = ({ story, onBack, onSequel, isNewSt
 
     const voiceGain = ctx.createGain();
     voiceGain.gain.value = isVoiceMuted ? 0 : voiceVolume;
-    voiceGain.connect(ctx.destination);
-    voiceGainRef.current = voiceGain;
+
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 64; // Small for simplified look
+    analyserRef.current = analyser;
 
     const source = ctx.createBufferSource();
     source.buffer = buffer;
+
     source.connect(voiceGain);
+    voiceGain.connect(analyser);
+    analyser.connect(ctx.destination);
+    voiceGainRef.current = voiceGain;
 
     const offset = offsetOverride !== undefined ? offsetOverride : pauseTimeRef.current;
 
@@ -338,8 +346,8 @@ export const Player: React.FC<PlayerProps> = ({ story, onBack, onSequel, isNewSt
     return (
       <div onClick={toggleScreenSaver} className="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center animate-fade-in cursor-pointer">
         <div className="text-night-700 text-[10rem] font-thin opacity-20 select-none">{currentTimeStr}</div>
-        <div className="absolute bottom-20 flex gap-1">
-          {[1, 2, 3, 4, 5].map(i => (<div key={i} className={`w-1 h-8 bg-dream-500/30 rounded-full ${isPlaying ? 'animate-pulse' : ''}`} style={{ animationDelay: `${i * 0.1}s` }} />))}
+        <div className="absolute bottom-20">
+          <AudioVisualizer analyser={analyserRef.current} isPlaying={isPlaying} color="#8b5cf6" />
         </div>
         <div className="absolute bottom-10 text-night-800 text-xs font-bold tracking-widest">TAP TO WAKE</div>
       </div>
@@ -365,7 +373,10 @@ export const Player: React.FC<PlayerProps> = ({ story, onBack, onSequel, isNewSt
       {!isReadMode && (
         <div className="flex items-center justify-between z-10">
           <button onClick={onBack} className="p-2 -ml-2 text-slate-400 hover:text-white"><ArrowLeft className="w-6 h-6" /></button>
-          <div className="text-xs font-bold text-slate-500 tracking-widest uppercase">The Active Player</div>
+          <div className="flex flex-col items-center">
+            <div className="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-1">Lecture en cours</div>
+            <AudioVisualizer analyser={analyserRef.current} isPlaying={isPlaying} />
+          </div>
           <div className="w-8"></div>
         </div>
       )}

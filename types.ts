@@ -27,6 +27,7 @@ export enum AppState {
 }
 
 export interface ChildProfile {
+  id: string;
   name: string;
   age: number;
   avatar: string;

@@ -31,10 +31,12 @@ const GoodNightSchedule = React.lazy(() => import('./GoodNightComponents').then(
 const GoodNightTips = React.lazy(() => import('./GoodNightComponents').then(m => ({ default: m.GoodNightTips })));
 const GoodNightPlayer = React.lazy(() => import('./GoodNightComponents').then(m => ({ default: m.GoodNightPlayer })));
 
+import { User } from '@supabase/supabase-js';
+
 interface AppRouterProps {
     appState: AppState;
     setAppState: (state: AppState) => void;
-    user: any;
+    user: User | null;
     childProfile: ChildProfile;
     stories: Story[];
     activeStory: Story | null;
@@ -48,7 +50,7 @@ interface AppRouterProps {
     handleSequel: (story: Story) => void;
     handleOpenStory: (story: Story) => void;
     handleLoginSuccess: () => void;
-    toggleFavorite: (e: any, id: string) => void;
+    toggleFavorite: (e: React.MouseEvent, id: string) => void;
     deleteStory?: (id: string) => void;
     filteredStories: Story[];
     searchTerm: string;

@@ -1,7 +1,19 @@
-
 import React from 'react';
+import { StoryParams, ChildProfile } from "./types";
 
-export const INITIAL_STORY_PARAMS: any = {
+export const INITIAL_PROFILE: ChildProfile = {
+  id: '',
+  name: '',
+  avatar: '🧑‍🚀',
+  age: 5,
+  interests: [],
+  values: [],
+  fears: [],
+  familyContext: '',
+  languageStyle: 'douce'
+};
+
+export const INITIAL_STORY_PARAMS: StoryParams = {
   childName: '',
   avatar: '🧑‍🚀',
   age: 5,
@@ -9,27 +21,11 @@ export const INITIAL_STORY_PARAMS: any = {
   moral: '',
   useRealFacts: false,
   location: '',
-  imageStyle: 'watercolor',
-  duration: 12,
+  imageStyle: 'cartoon',
+  duration: 10,
   languageLevel: '5-7',
-  narrativeStyle: 'cooperative',
-  voiceId: 'Leda' // Default voice
-};
-
-export const INITIAL_PROFILE: any = {
-  name: '',
-  age: 5,
-  avatar: '🧑‍🚀',
-  interests: [],
-  values: [],
-  fears: [],
-  familyContext: '',
-  languageStyle: 'douce',
-  stats: {
-    storiesCount: 0,
-    minutesListened: 0,
-    streak: 0
-  }
+  narrativeStyle: 'magic',
+  voiceId: 'Gemini'
 };
 
 export const AGE_GROUPS = [
@@ -136,10 +132,10 @@ export const VOICES_LIST = [
 
 export const DISCOVERY_TAGS = ['Tout', 'Nouveau', 'Magie', 'Nature', 'Espace', 'Animaux'];
 
-export const EXPLORE_CARDS: any[] = [];
+export const EXPLORE_CARDS: [] = [];
 
-export const SERIES_MOCK: any = null;
+export const SERIES_MOCK: null = null;
 
-export const MEDITATIONS_MOCK: any[] = [];
+export const MEDITATIONS_MOCK: [] = [];
 
-export const DREAM_JOURNAL_RECENT: any[] = [];
+export const DREAM_JOURNAL_RECENT: [] = [];

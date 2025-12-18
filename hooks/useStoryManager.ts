@@ -4,10 +4,11 @@ import { INITIAL_STORY_PARAMS } from '../constants';
 import { generateStoryScript, generateSpeech, generateCoverImage } from '../services/geminiService';
 import { storageService } from '../services/storageService';
 import { supabase } from '../services/supabase';
+import { User } from '@supabase/supabase-js';
 import { triggerConfetti } from '../utils/confetti';
 
 interface UseStoryManagerProps {
-    user: any;
+    user: User | null;
     childProfile: ChildProfile;
     setAppState: (state: AppState) => void;
     checkAccess: () => boolean;
@@ -174,9 +175,9 @@ export const useStoryManager = ({
             setAppState(AppState.PLAYER);
             incrementDailyCount();
             triggerConfetti();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
-            const errorMessage = error?.message || JSON.stringify(error);
+            const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
 
             if (errorMessage.includes("429") || errorMessage.includes("quota")) {
                 alert("Oups ! Les lutins sont fatigués (Quota dépassé). Réessaie dans une minute ! ⏳");
