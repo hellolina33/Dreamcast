@@ -16,26 +16,24 @@ serve(async (req) => {
         const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
         if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not set');
 
-        const { prompt, history, type, voiceName } = await req.json();
+        const { prompt, type, voiceName, style, size, config } = await req.json();
 
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // Or pro if available
 
         let resultData;
 
         if (type === 'story') {
-            const result = await model.generateContent(prompt);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+            const result = await model.generateContent({
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                generationConfig: config || {
+                    responseMimeType: "application/json",
+                }
+            });
             const text = result.response.text();
             resultData = { text };
         } else if (type === 'tts') {
-            // Note: Edge Functions might not support Audio Blob streams perfectly yet via this lib, 
-            // but let's try standard fetch for TTS if library fails, or use the library's experimental endpoints.
-            // For now, let's assume valid JSON return or base64.
-            // Google GenAI node lib usually works.
-            // If 'gemini-2.5-flash-preview-tts' is not in the type definitions yet, we might use raw fetch.
-
-            // Simulating raw fetch for TTS flexibility
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${GEMINI_API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
             const ttsResp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -51,6 +49,20 @@ serve(async (req) => {
             });
             const ttsJson = await ttsResp.json();
             resultData = ttsJson;
+        } else if (type === 'image') {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:generateContent?key=${GEMINI_API_KEY}`;
+            const imgResp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        imageConfig: { aspectRatio: "1:1", imageSize: size || "1024x1024" }
+                    }
+                })
+            });
+            const imgJson = await imgResp.json();
+            resultData = imgJson;
         }
 
         return new Response(JSON.stringify(resultData), {
@@ -58,8 +70,9 @@ serve(async (req) => {
         });
 
     } catch (error) {
+        console.error("Proxy Error:", error);
         return new Response(JSON.stringify({ error: error.message }), {
-            status: 400,
+            status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
     }
