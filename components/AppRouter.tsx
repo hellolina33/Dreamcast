@@ -30,6 +30,7 @@ const GoodNightHistory = React.lazy(() => import('./GoodNightComponents').then(m
 const GoodNightSchedule = React.lazy(() => import('./GoodNightComponents').then(m => ({ default: m.GoodNightSchedule })));
 const GoodNightTips = React.lazy(() => import('./GoodNightComponents').then(m => ({ default: m.GoodNightTips })));
 const GoodNightPlayer = React.lazy(() => import('./GoodNightComponents').then(m => ({ default: m.GoodNightPlayer })));
+const SharedStory = React.lazy(() => import('./SharedStory').then(m => ({ default: m.SharedStory })));
 
 import { User } from '@supabase/supabase-js';
 
@@ -60,6 +61,7 @@ interface AppRouterProps {
     isLoading?: boolean;
     isPremium?: boolean;
     onShowPaywall?: () => void;
+    sharedStoryId?: string | null;
 }
 
 export const AppRouter: React.FC<AppRouterProps> = ({
@@ -67,7 +69,7 @@ export const AppRouter: React.FC<AppRouterProps> = ({
     loadingStep, storyParams, updateParams, handleProfileComplete, startWizard,
     handleCreate, handleSequel, handleOpenStory, handleLoginSuccess, toggleFavorite,
     filteredStories, searchTerm, setSearchTerm, streak, greeting, isLoading,
-    isPremium, onShowPaywall
+    isPremium, onShowPaywall, sharedStoryId
 }) => {
 
     return (
@@ -187,6 +189,12 @@ export const AppRouter: React.FC<AppRouterProps> = ({
                                 toggleFavorite={toggleFavorite}
                                 isLoading={isLoading}
                             />
+                        </PageTransition>
+                    )}
+
+                    {appState === AppState.SHARED_STORY && (
+                        <PageTransition key="shared">
+                            <SharedStory storyId={sharedStoryId || activeStory?.id || ''} onBack={() => setAppState(AppState.HOME)} />
                         </PageTransition>
                     )}
                 </AnimatePresence>

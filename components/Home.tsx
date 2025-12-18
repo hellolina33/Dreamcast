@@ -1,7 +1,8 @@
 import React from 'react';
 import { AppState, ChildProfile, Story } from '../types';
-import { Mic, Moon, Sparkles, Plus, PenTool, Wind, BookOpen, Search, Heart } from 'lucide-react';
+import { Mic, Moon, Sparkles, Plus, PenTool, Wind, BookOpen, Search, Heart, Share2 } from 'lucide-react';
 import { useHaptic } from '../hooks/useHaptic';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ListSkeleton, StoryCardSkeleton, Skeleton } from './Skeletons';
 
 interface HomeProps {
@@ -49,7 +50,7 @@ export const Home: React.FC<HomeProps> = ({
                 {/* Good Night Card (Large) */}
                 <button
                     onClick={() => { medium(); setAppState(AppState.GOODNIGHT_HOME); }}
-                    className="col-span-2 relative h-40 rounded-[2.5rem] bg-gradient-to-br from-[#312e81] to-[#4c1d95] p-6 text-left overflow-hidden group shadow-[0_10px_30px_-10px_rgba(49,46,129,0.5)] transition-all active:scale-[0.98]"
+                    className="col-span-2 relative h-40 rounded-[2.5rem] bg-gradient-to-br from-[#312e81] to-[#4c1d95] p-6 text-left overflow-hidden group shadow-[0_10px_30px_-10px_rgba(49,46,129,0.5)] transition-all premium-card-hover"
                 >
                     <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
                     <div className="relative z-10 flex flex-col h-full justify-between">
@@ -64,13 +65,12 @@ export const Home: React.FC<HomeProps> = ({
                             <p className="text-indigo-200 text-sm font-medium">Lancer la routine du soir</p>
                         </div>
                     </div>
-                    <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gradient-to-br from-dream-400 to-transparent opacity-20 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
                 </button>
 
                 {/* Create Story */}
                 <button
                     onClick={() => { heavy(); startWizard(); }}
-                    className="col-span-1 h-48 rounded-[2.5rem] bg-gradient-to-b from-neon-pink to-[#be185d] p-5 text-left relative overflow-hidden group shadow-[0_10px_30px_-10px_rgba(190,24,93,0.5)] transition-all active:scale-[0.98]"
+                    className="col-span-1 h-48 rounded-[2.5rem] bg-gradient-to-b from-neon-pink to-[#be185d] p-5 text-left relative overflow-hidden group shadow-[0_10px_30px_-10px_rgba(190,24,93,0.5)] transition-all premium-card-hover"
                 >
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30"></div>
                     <div className="relative z-10 flex flex-col h-full justify-between">
@@ -79,7 +79,7 @@ export const Home: React.FC<HomeProps> = ({
                         </div>
                         <div>
                             <h3 className="text-xl font-display font-bold text-white leading-tight mb-2">Créer une<br />Histoire</h3>
-                            <div className="w-10 h-10 rounded-full bg-white text-neon-pink flex items-center justify-center mt-2 shadow-lg">
+                            <div className="w-10 h-10 rounded-full bg-white text-neon-pink flex items-center justify-center mt-2 shadow-lg group-hover:scale-110 transition-transform">
                                 <Plus className="w-6 h-6 stroke-[3]" />
                             </div>
                         </div>
@@ -90,7 +90,7 @@ export const Home: React.FC<HomeProps> = ({
                 <div className="col-span-1 flex flex-col gap-4 h-48">
                     <button
                         onClick={() => { light(); setAppState(AppState.DREAM_JOURNAL); }}
-                        className="flex-1 rounded-[2rem] clay-card p-4 flex items-center gap-3 hover:bg-white/5 active:scale-[0.98] transition-all"
+                        className="flex-1 rounded-[2rem] clay-card p-4 flex items-center gap-3 hover:bg-white/5 jelly-btn"
                     >
                         <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
                             <PenTool className="w-5 h-5 text-blue-300" />
@@ -100,7 +100,7 @@ export const Home: React.FC<HomeProps> = ({
 
                     <button
                         onClick={() => { light(); setAppState(AppState.MEDITATIONS); }}
-                        className="flex-1 rounded-[2rem] clay-card p-4 flex items-center gap-3 hover:bg-white/5 active:scale-[0.98] transition-all"
+                        className="flex-1 rounded-[2rem] clay-card p-4 flex items-center gap-3 hover:bg-white/5 jelly-btn"
                     >
                         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
                             <Wind className="w-5 h-5 text-emerald-300" />
@@ -154,20 +154,52 @@ export const Home: React.FC<HomeProps> = ({
                                 <p className="text-xs opacity-40">Crée ta première histoire.</p>
                             </div>
                         ) : (
-                            filteredStories.map(story => (
-                                <div key={story.id} onClick={() => { light(); handleOpenStory(story); }} className="clay-card p-3 rounded-[1.5rem] flex gap-4 items-center group cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99]">
-                                    <div className="w-16 h-16 rounded-2xl overflow-hidden relative shadow-lg shrink-0 border border-white/10">
-                                        {story.coverImageUrl ? <img src={story.coverImageUrl} className="w-full h-full object-cover" alt="cover" /> : <div className="w-full h-full bg-dream-500/20" />}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-white text-base truncate mb-1">{story.title}</h4>
-                                        <p className="text-[11px] font-bold text-slate-400 truncate uppercase tracking-wide bg-white/5 inline-block px-2 py-0.5 rounded-full">{story.params.theme}</p>
-                                    </div>
-                                    <button onClick={(e) => { success(); toggleFavorite(e, story.id); }} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 transition-colors">
-                                        <Heart className={`w-5 h-5 ${story.isFavorite ? 'fill-neon-pink text-neon-pink' : ''}`} />
-                                    </button>
-                                </div>
-                            ))
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                    visible: { transition: { staggerChildren: 0.1 } },
+                                    hidden: {}
+                                }}
+                                className="space-y-3"
+                            >
+                                {filteredStories.map(story => (
+                                    <motion.div
+                                        key={story.id}
+                                        variants={{
+                                            hidden: { opacity: 0, x: -20 },
+                                            visible: { opacity: 1, x: 0 }
+                                        }}
+                                        onClick={() => { light(); handleOpenStory(story); }}
+                                        className="clay-card p-3 rounded-[1.5rem] flex gap-4 items-center group cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] premium-card-hover"
+                                    >
+                                        <div className="w-16 h-16 rounded-2xl overflow-hidden relative shadow-lg shrink-0 border border-white/10">
+                                            {story.coverImageUrl ? <img src={story.coverImageUrl} className="w-full h-full object-cover" alt="cover" /> : <div className="w-full h-full bg-dream-500/20" />}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-white text-base truncate mb-1">{story.title}</h4>
+                                            <p className="text-[11px] font-bold text-slate-400 truncate uppercase tracking-wide bg-white/5 inline-block px-2 py-0.5 rounded-full">{story.params.theme}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const shareUrl = `${window.location.origin}?share=${story.id}`;
+                                                    navigator.clipboard.writeText(shareUrl);
+                                                    medium();
+                                                    alert("Lien copié dans le presse-papier ! ✨");
+                                                }}
+                                                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-dream-400 transition-colors"
+                                            >
+                                                <Share2 className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={(e) => { success(); toggleFavorite(e, story.id); }} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 transition-colors">
+                                                <Heart className={`w-5 h-5 ${story.isFavorite ? 'fill-neon-pink text-neon-pink' : ''}`} />
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
                         )
                     )}
                 </div>

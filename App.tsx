@@ -50,6 +50,7 @@ export default function App() {
   const [streak, setStreak] = useState(0);
   const [greeting, setGreeting] = useState("Bonjour");
   const [isInitialized, setIsInitialized] = useState(false);
+  const [sharedStoryId, setSharedStoryId] = useState<string | null>(null);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const { isPremium, checkAccess, incrementDailyCount, upgradeToPremium } = useSubscription();
   const [errorState, setErrorState] = useState<'OFFLINE' | 'GENERIC' | null>(null);
@@ -81,6 +82,14 @@ export default function App() {
   });
 
   useEffect(() => {
+    // Detect shared story link (Deep links)
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get('share');
+    if (shareId) {
+      setSharedStoryId(shareId);
+      setAppState(AppState.SHARED_STORY);
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); setDeferredPrompt(e); });
 
     // Note: Story loading is now inside the hook
@@ -211,6 +220,7 @@ export default function App() {
               isLoading={isLoadingStories}
               isPremium={isPremium}
               onShowPaywall={() => setAppState(AppState.PAYWALL)}
+              sharedStoryId={sharedStoryId}
             />
           </div>
 

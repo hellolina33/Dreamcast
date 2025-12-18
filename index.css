@@ -152,8 +152,17 @@
         animation-delay: 4s;
     }
 
-    /* Jelly Button Base */
+    /* Jelly Button Base - High Tactility */
     .jelly-btn {
-        @apply transition-all duration-100 ease-in-out active:scale-95;
+        @apply transition-all duration-300 ease-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] active:scale-90 hover:scale-105;
+    }
+
+    .jelly-btn-heavy {
+        @apply transition-all duration-500 ease-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] active:scale-75 hover:scale-110 active:rotate-2;
+    }
+
+    /* Interactive Card Hover */
+    .premium-card-hover {
+        @apply transition-all duration-500 hover:shadow-[0_20px_50px_rgba(139, 92, 246, 0.3)] hover:-translate-y-1 active:scale-[0.98];
     }
 }

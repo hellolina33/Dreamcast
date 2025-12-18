@@ -114,7 +114,7 @@ export const PasswordReset: React.FC<PasswordResetProps> = ({ onComplete }) => {
                                 <Button
                                     type="submit"
                                     isLoading={loading}
-                                    className="w-full mt-6"
+                                    className="w-full mt-6 jelly-btn-heavy"
                                 >
                                     Changer le Mot de Passe
                                 </Button>
